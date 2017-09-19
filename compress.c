@@ -1,39 +1,54 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "binary_tree.c"
+#include "compress.h"
+#include "hash_table.c"
+#define MAX_SIZE 256
 
 int* frequency(FILE *arq, int tam)
 {
 	int *freq;
 	int i;
-	freq = (int*) calloc(256,sizeof(int));
+	freq = (int*) calloc(MAX_SIZE,sizeof(int));
 	for(i = 0; i < tam; ++i)
 	{
 		freq[getc(arq)]++;
 	}
 	return freq;
 }
-void compress(FILE *arq, int tamanho)
+
+hash_table* dicionary(binary_tree *bt,hash_table *dicionary)
+{
+	unsigned char byte;
+	char *path;
+	path = (char*) calloc(10,sizeof(char));
+	back_track(bt, path,dicionary);
+}
+
+void compress(FILE *new_arq,FILE *arq, int tamanho)
 {
 	int *freq = frequency(arq,tamanho);
 	int i;
 	binary_tree *bt = create_empty_binary_tree();
+	hash_table *dicionary;
 
-	//for(i = 0; i < 256; ++i) printf("%d ", freq[i]); //printa o array de frequencia
-	
-	/*
-	Esse for ta enfileirando mas ta enfileirando e repetindo tds os elementos
-	por exemplo, se eu enfileirar o 'a', ai tds os elementos da fila fica 'a'
-	não consegui identificar porque ta acontecendo isso, please deem uma olhada
-	for(i = 0; i<256; ++i)
+
+	// for(i = 0; i < MAX_SIZE; ++i) printf("%d ", freq[i]); //printa o array de frequencia
+	// printf("\n");
+	for(i = 0; i<MAX_SIZE; ++i)
 	{
-		if(freq[i] != 0)
+		if( freq[i] )
 		{
+			int *code = (int *) malloc(sizeof(int));
+			*code = i;
 			bt = enqueue(bt,
-			create_binary_tree( &i, freq[i],NULL,NULL,NULL));
-			//printf("%c\n", *(char*)bt->item);
+			create_binary_tree( code, freq[i], NULL, NULL, NULL));
 		}
 	}
-	*/
+	bt = queue_to_tree(bt);
+	// printf("Passou\n");
+	// printf("Root: %c prioridade: %d\n", *(char*) bt->item,bt->priority);
+	printf("Creatting dicionary...\n");
+	dicionary = tree_to_table(bt);
 
 }
