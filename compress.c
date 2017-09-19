@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "binary_tree.c"
+#include "binary_tree.h"
 #include "compress.h"
-#include "hash_table.c"
+#include "hash_table.h"
 #define MAX_SIZE 256
 
 int* frequency(FILE *arq, int tam)
