@@ -1,9 +1,10 @@
-#include "binary_tree.h"
+//#include "binary_tree.h"
 #include <stdlib.h>
+#include <stdio.h>
 
-typedef struct _binary_tree binary_tree;
+typedef struct BINARY_TREE binary_tree;
 
-struct binary_tree
+struct BINARY_TREE
 {
 	void *item;
 	int priority;
@@ -26,20 +27,38 @@ binary_tree* create_binary_tree(void *item, int priority, binary_tree *next, bin
 	bt->next = next;
 	bt->left = left;
 	bt->right = right;
-
 	return bt;
 }
 
+
+void print_queue(binary_tree *bt)
+{
+	binary_tree *current = bt;
+	while(current != NULL)
+	{
+		printf("Item: '%c', frequencia: %d\n", *(char*)current->item,current->priority);
+		current = current->next;
+	}
+}
+
+
 binary_tree* enqueue(binary_tree *bt, binary_tree *new_element)
 {
-	if(bt == NULL || bt->priority >= priority)
+	if(bt == NULL)
 	{
 		new_element->next = bt;
 		bt = new_element;
 
-	} else{
+	}
+	else if(bt->priority >= new_element->priority)
+	{
+		new_element->next = bt;
+		bt = new_element;
+	}
+	else
+	{
 		binary_tree *current = bt;
-		while(bt->next != NULL && bt->next->priority < priority)
+		while(current->next != NULL && bt->next->priority < new_element->priority)
 		{
 			current = current->next;
 		}
@@ -47,7 +66,7 @@ binary_tree* enqueue(binary_tree *bt, binary_tree *new_element)
 		new_element->next = current->next;
 		current->next = new_element;
 	}
-
+	print_queue(bt);//Só pra verificar como ta a fila
 	return bt;
 
 }
@@ -59,7 +78,7 @@ binary_tree* queue_to_tree(binary_tree *bt)
 	{
 		binary_tree *next = bt->next;
 		int priority = bt->priority + next->priority;
-		binary_tree *parent = create_binary_tree('*', priority, bt, next, NULL);
+		binary_tree *parent = create_binary_tree((char*) '*', priority, bt, next, NULL);
 		return queue_to_tree( enqueue(next->next, parent) );
 
 	} else {
