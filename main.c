@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "compress.h"
+#include "descompress.h"
 
 int main(int argc, char const *argv[])
 {
