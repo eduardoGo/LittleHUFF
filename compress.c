@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "binary_tree.h"
+#include "binary_tree.c"
 #include "compress.h"
-#include "hash_table.h"
+#include "hash_table.c"
 #define MAX_SIZE 256
 
 int* frequency(FILE *arq, int tam)
@@ -17,13 +17,29 @@ int* frequency(FILE *arq, int tam)
 	return freq;
 }
 
-hash_table* dicionary(binary_tree *bt,hash_table *dicionary)
+int hash_fuction(void *key)
 {
-	unsigned char byte;
-	char *path;
-	path = (char*) calloc(10,sizeof(char));
-	back_track(bt, path,dicionary);
+	return *((int*) key)
 }
+
+int compare(void *key1, void *key2)
+{
+	return *((unsigned char*) key1) == *((unsigned char*) key2);
+}
+
+// // This probrlem
+// void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, int size)
+// {
+// 	int i = 0;
+// 	unsigned char byte;
+// 	fseek(new_arq,16,SEEK_SET); //Os primeiros 16bits são do head
+	
+// 	for(i = 0; i < size; ++i)
+// 	{
+// 		byte = *((unsigned char*) get(dicionary,getc(arq), hash_fuction, compare));
+// 		fprintf(new_arq,"%s", byte);
+// 	}
+// }
 
 void compress(FILE *new_arq,FILE *arq, int tamanho)
 {
@@ -35,6 +51,7 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 
 	// for(i = 0; i < MAX_SIZE; ++i) printf("%d ", freq[i]); //printa o array de frequencia
 	// printf("\n");
+	
 	for(i = 0; i<MAX_SIZE; ++i)
 	{
 		if( freq[i] )
@@ -48,7 +65,10 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 	bt = queue_to_tree(bt);
 	// printf("Passou\n");
 	// printf("Root: %c prioridade: %d\n", *(char*) bt->item,bt->priority);
-	printf("Creatting dicionary...\n");
+	printf("\nCreatting dicionary...\n");
 	dicionary = tree_to_table(bt);
+	printf("Codding...\n");
+	codding(new_arq,arq,dicionary,tamanho);
+
 
 }
