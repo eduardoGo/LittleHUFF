@@ -27,6 +27,8 @@ int compare(void *key1, void *key2)
 	return *((unsigned char*) key1) == *((unsigned char*) key2);
 }
 
+//teste
+
 char add_byte(unsigned char byte, int pos)
 {
 	unsigned mask = 1 << (7 - pos);
