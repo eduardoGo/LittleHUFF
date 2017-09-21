@@ -11,11 +11,23 @@ int get_trash(char byte[16])
 {
 	int trash = 0;
 	int len = strlen(byte);
-
-	if (len == 16) trash = 7;
-	else if (len == 15) trash = 3;
-	else if (len == 14) trash = 1;
-
+	
+	if (len == 16)
+	{
+		if (byte[0] == 1) trash += 4;
+		if (byte[1] == 1) trash += 2;
+		if (byte[2] == 1) trash += 1;
+	}
+	else if (len == 15)
+	{		
+		if (byte[0] == 1) trash += 2;
+		if (byte[1] == 1) trash += 1;
+	}
+	else if (len == 14)
+	{
+		if (byte[0] == 1) trash += 1;
+	}
+	
 	return trash;
 }
 
