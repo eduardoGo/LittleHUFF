@@ -7,41 +7,61 @@
 #define MAX_SIZE 256
 #define DEBUG if(1)
 
-int get_trash(char byte[16])
+// CONVERTE CARACTERE PARA BINÁRIO, SALVA EM STRING E ENTÃO RETORNA A STRING
+char * get_bits(char a)
+{
+	char bits[8];
+	int b = (int) a; // CONVERTE O CARACTERE PARA DECIMAL
+
+	int i;
+	for (i = 7; i >= 0; i--)
+	{
+		// 0 OCUPA A POSIÇÃO 48 NA TABELA ASCII E 1 OCUPA A POSIÇÃO SEGUINTE
+		bits[i] = (char) ((b%2) + 48); 
+	}
+
+	return bits;
+}
+
+/*
+	INFORMAÇÕES DO CABEÇALHO
+*/
+
+// TAMANHO DO LIXO
+int get_trash(char byte[8])
 {
 	int trash = 0;
 	int len = strlen(byte);
 	
-	if (len == 16)
+	int i;
+	for (i = 2; i >= 0; i--)
 	{
-		if (byte[0] == 1) trash += 4;
-		if (byte[1] == 1) trash += 2;
-		if (byte[2] == 1) trash += 1;
-	}
-	else if (len == 15)
-	{		
-		if (byte[0] == 1) trash += 2;
-		if (byte[1] == 1) trash += 1;
-	}
-	else if (len == 14)
-	{
-		if (byte[0] == 1) trash += 1;
+		if (byte[i] == '1') trash += pow(2,i);
 	}
 	
 	return trash;
 }
 
-binary_tree * get_tree(char byte[16], char str[]);
+// ÁRVORE DE CODIFICAÇÃO
+int get_size_tree(char byte[16])
+{
+	int size = 0;
+	int i;
+	for (i = sizeof(byte); i > (16-) ; i--)
+	{
+		if ()
+	}
+}
 
 void descompress(FILE * file, FILE * new_file)
 {
 	unsigned char c[2];
-	char bits[16];
+	char bits[8];
 	int trash;
 	
 	fread(c, sizeof(unsigned char), 2, file);
 
-	itoa((int) c[1], bits, 2);
+	bits = get_bits(c[0]);
 	trash = get_trash(bits);
 
 }
