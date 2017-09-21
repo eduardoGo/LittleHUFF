@@ -1,4 +1,4 @@
-#include "../inc/hash_table.h"
+#include "hash_table.h"
 #include "CUnit/CUnit.h"
 #include <stdio.h>
 #include <stdlib.h>

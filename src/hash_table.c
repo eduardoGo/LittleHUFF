@@ -1,4 +1,4 @@
-#include "../inc/hash_table.h"
+#include "hash_table.h"
 #define MAX_SIZE 256
 
 struct _node

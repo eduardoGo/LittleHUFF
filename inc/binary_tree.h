@@ -2,7 +2,7 @@
 #define BINARY_TREE_H
 
 typedef struct _node node;
-typedef struct _hash_table hash_table;
+typedef struct _hash_table node;
 
 //RETORNA UMA ARVORE BINARIA VAZIA
 binary_tree* create_empty_binary_tree();

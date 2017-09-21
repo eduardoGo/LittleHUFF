@@ -1,5 +1,5 @@
-#include "../inc/binary_tree.h"
-#include "../inc/hash_table.h"
+#include "binary_tree.h"
+#include "hash_table.h"
 #include <stdlib.h>
 
 struct _binary_tree
