@@ -52,29 +52,35 @@ void set_tree_size(FILE *new_arq,short int tree_size)
 
 }
 
-void set_tree(FILE *new_arq, binary_tree *bt)
+void set_tree(FILE *new_arq, char *tree)
 {
-  char *tree = tree_pre_order(bt);
+  
   while(*tree != '\0')
   {
   	fprintf(new_arq,"%s", *(tree++));
   }
-
-  fseek(new_arq,tree_size,SEEK_	CUR) //Seta o fluxo corrente a partir do fluxo corrente atual
 }
 
 void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, 
-    int size_arq,short int tree_size,binary_tree *bt)
+    int size_arq,binary_tree *bt)
 {
 	int i,j,pos;
 	unsigned char byte = 0,trash = 0;
-	char *current;
+	char *current,*tree;
+	int *tree_size;
 	
-	fprintf(new_arq,"%s", byte);
-	fprintf(new_arq,"%s", byte);
+	/* 	talvez n precisse disso
+		fprintf(new_arq,"%s", byte);
+		fprintf(new_arq,"%s", byte);
+	*/
+
 	fseek(new_arq,2,SEEK_SET); //Os primeiros 16bits são do head
 
-	set_tree(new_arq,tree_size,bt); //Coloca a arvore em pre ordem no arquivo e seta o fluxo a partir da arvore
+	*tree = tree_pre_order(bt,tree_size); //Ponteiro para uma string que contem a arvore em pre ordem
+										  // tambem coloca o tamanho da arvore no ponteiro *tree_size
+
+	set_tree(new_arq,tree); //Coloca a arvore em pre ordem no arquivo
+	fseek(new_arq,*tree_size,SEEK_CUR) //Seta o fluxo corrente a partir da arvore
 
 	pos = j = i = 0;
 
@@ -96,10 +102,16 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,
 			i++;
 		}
 	}
+
 	fseek(new_arq,0,SEEK_SET); //Seta o fluxo corrente no inicio do arquivo
-	trash = 8 - pos; //trash contem a quantidade de bits que nao estao em uso no ultimo byte do arquivo
-	set_tree_size(new_arq,tree_size);
-	set_trash(new_arq,trash);
+	set_tree_size(new_arq,*tree_size);
+	
+	if(pos != 0)
+	{
+		trash = 8 - pos; //trash contem a quantidade de bits que nao estao em uso no ultimo byte do arquivo
+		set_trash(new_arq,trash);
+	}
+
 
 }
 
@@ -127,10 +139,12 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 	}
 	printf("Creatting tree...\n");
 	bt = queue_to_tree(bt);
+	
 	printf("Creatting dicionary...\n");
 	dicionary = tree_to_table(bt);
+	
 	printf("Codding...\n");
-	codding(new_arq,arq,dicionary,tamanho,tree_size(bt),bt);
+	codding(new_arq,arq,dicionary,tamanho,bt);
 
 	printf("Sucess! :)\n");
 

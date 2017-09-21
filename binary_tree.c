@@ -52,17 +52,6 @@ binary_tree* enqueue(binary_tree *bt, void *item, int priority)
 
 }
 
-int tree_size(binary_tree *bt,int size)
-{
-	if(bt == NULL) return 0;
-	if(bt->left == NULL && bt->right == NULL)
-	{
-		return 1;
-	}
-	return tree_size(bt->left,size+1) + tree_size(bt->right,size+1);
-
-}
-
 binary_tree* queue_to_tree(binary_tree *bt)
 {
 
@@ -114,6 +103,32 @@ hash_table* tree_to_table(binary_tree *bt)
 	unsigned char code[10];
 	mapping(bt, ht, code, 0);
 	return ht;
+}
 
+void insert_tree(binary_tree *bt, char *tree, int *i)
+{
+	if(bt != NULL)
+	{
+		if(bt->item == '*' && bt->left == NULL && bt->right == NULL) //Caracter de escape
+		{
+			*(tree+i) = '\\';
+			*i = *i+1;
+		}
+		*(tree+i) = bt->item;
+		*i = *i+1;
+		insert_tree(bt->left,tree,i);
+		insert_tree(bt->right,tree,i);
+	}
+}
+char* tree_pre_order(binary_tree *bt, int *i)
+{
+	char *tree;
+	i = (int*) malloc(1*sizeof(char));
+	tree = (char*) malloc(8200*sizeof(char)); //MAX_SIZE da arvore '8200'
+	*i = 0;
+	insert_tree(bt,tree,i);
+	*(tree+i) = '\0';
+	tree = realloc(tree, *(i) * sizeof(char)); //realloc de acordo com o tamanho da arvore (i)
 
+	return tree;
 }
