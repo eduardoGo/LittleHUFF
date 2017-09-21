@@ -75,36 +75,22 @@ int hash_function(void *key)
 	return *( (int*) key );
 }
 
-int equals(void *key1, void *key2)
-{
-	return ( *(int*) key1 ) == *( (int*) key2 );
-}
-
-unsigned char set_bit(unsigned char c, int i)
-{
-	unsigned char mask = 1 << i;
-	return c | mask;
-}
-
-int is_bit_i_set(unsigned char c, int i)
-{
-	unsigned char mask = 1 << i;
-	return c & mask;
-}
-
-void mapping(binary_tree *bt, hash_table *ht, unsigned char code, int depth)
+void mapping(binary_tree *bt, hash_table *ht, unsigned char *code, int depth)
 {
 	if(bt->left == NULL && bt->right == NULL)
 	{
-		unsigned char *value = (unsigned char *) malloc(sizeof(unsigned char));
-		*value = code;
+		unsigned char *value = (unsigned char *) malloc(10 * sizeof(unsigned char));
+		strcpy(value, code);
 
-		put(ht, bt->item, value, hash_function, equals);
+		put(ht, bt->item, value, hash_function);
 	
 	} else {
-
+		code[depth] = '0';
+		code[depth + 1] = '\0';
 		mapping(bt->left, ht, code, depth + 1);
-		code = set_bit(code, 8 - depth);
+
+		code[depth] = '1';
+		code[depth + 1] = '\0';
 		mapping(bt->right, ht, code, depth + 1);
 
 	} 
@@ -113,7 +99,8 @@ void mapping(binary_tree *bt, hash_table *ht, unsigned char code, int depth)
 hash_table* tree_to_table(binary_tree *bt)
 {
 	hash_table *ht = create_hash_table();
-	mapping(bt, ht, 0, 0);
+	unsigned char code[10];
+	mapping(bt, ht, code, 0);
 
 
 }

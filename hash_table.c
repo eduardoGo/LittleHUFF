@@ -26,18 +26,12 @@ hash_table* create_hash_table()
 	return ht;
 }
 
-void put(hash_table *ht, void *key, void *value, int (*hash_function)(void *key), int (*equals)(void *key1, void *key2))
+void put(hash_table *ht, void *key, void *value, int (*hash_function)(void *key))
 {
 	int h = (* hash_function)(key);
 	int count = 0;
 	while(ht->table[h] != NULL && count < MAX_SIZE)
 	{
-		if( equals(ht->table[h]->key, key) )
-		{
-			ht->table[h]->value = value;
-			break;
-		}
-
 		h = ( h + 1 ) % MAX_SIZE;
 		count++;
 	}
