@@ -37,10 +37,18 @@ void set_trash(FILE *new_arq,unsigned char trash)
 {
 	unsigned char byte;
 	byte = getc(new_arq);
-	byte = byte | trash;
+	byte = trash << 5;
+	fprintf(new_arq,"%s",byte);
 }
 
-void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, int size)
+void set_tree(FILE *new_arq,short int tree_size)
+{
+  int i;
+  for()
+}
+
+void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, 
+    int size_arq,short int tree_size)
 {
 	int i,j,pos;
 	unsigned char byte = 0,trash = 0;
@@ -48,16 +56,15 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, int size)
 	
 	fprintf(new_arq,"%s", byte);
 	fprintf(new_arq,"%s", byte);
-	
 	fseek(new_arq,2,SEEK_SET); //Os primeiros 16bits são do head
-	
+	set_tree(new_arq,tree_size);
 	pos = j = i = 0;
 
-	for(j = 0; j < size; ++j)
+	for(j = 0; j < size_arq; ++j)
 	{
 		current = ((unsigned char*) get(dicionary,getc(arq), hash_fuction, compare));
 		i = 0;
-		while(current[i] != '/0')
+		while(current[i] != '\0')
 		{
 			if(pos == 8)
 			{
@@ -74,6 +81,7 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, int size)
 	fseek(new_arq,0,SEEK_SET);
 	trash = 8 - pos; //trash contem a quantidade de bits que nao estao em uso no ultimo byte do arquivo
 	set_trash(new_arq,trash);
+	
 
 }
 
@@ -104,7 +112,7 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 	printf("\nCreatting dicionary...\n");
 	dicionary = tree_to_table(bt);
 	printf("Codding...\n");
-	codding(new_arq,arq,dicionary,tamanho);
+	codding(new_arq,arq,dicionary,tamanho,tree_size(bt));
 
 
 }
