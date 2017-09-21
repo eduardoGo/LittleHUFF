@@ -27,19 +27,55 @@ int compare(void *key1, void *key2)
 	return *((unsigned char*) key1) == *((unsigned char*) key2);
 }
 
-// // This probrlem
-// void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, int size)
-// {
-// 	int i = 0;
-// 	unsigned char byte;
-// 	fseek(new_arq,16,SEEK_SET); //Os primeiros 16bits são do head
+char add_byte(unsigned char byte, int pos)
+{
+	unsigned mask = 1 << (7 - pos);
+	return mask | byte;
+}
+
+void set_trash(FILE *new_arq,unsigned char trash)
+{
+	unsigned char byte;
+	byte = getc(new_arq);
+	byte = byte | trash;
+}
+
+void codding(FILE *new_arq, FILE *arq, hash_table *dicionary, int size)
+{
+	int i,j,pos;
+	unsigned char byte = 0,trash = 0;
+	char *current;
 	
-// 	for(i = 0; i < size; ++i)
-// 	{
-// 		byte = *((unsigned char*) get(dicionary,getc(arq), hash_fuction, compare));
-// 		fprintf(new_arq,"%s", byte);
-// 	}
-// }
+	fprintf(new_arq,"%s", byte);
+	fprintf(new_arq,"%s", byte);
+	
+	fseek(new_arq,2,SEEK_SET); //Os primeiros 16bits são do head
+	
+	pos = j = i = 0;
+
+	for(j = 0; j < size; ++j)
+	{
+		current = ((unsigned char*) get(dicionary,getc(arq), hash_fuction, compare));
+		i = 0;
+		while(current[i] != '/0')
+		{
+			if(pos == 8)
+			{
+				fprintf(new_arq,"%s", byte);
+				byte = 0;
+				pos = 0;	
+			}
+			if(current[i] == '1') byte = add_byte(byte,pos);
+
+			pos++;
+			i++;
+		}
+	}
+	fseek(new_arq,0,SEEK_SET);
+	trash = 8 - pos; //trash contem a quantidade de bits que nao estao em uso no ultimo byte do arquivo
+	set_trash(new_arq,trash);
+
+}
 
 void compress(FILE *new_arq,FILE *arq, int tamanho)
 {
