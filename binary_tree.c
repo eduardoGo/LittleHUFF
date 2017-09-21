@@ -29,8 +29,9 @@ binary_tree* create_binary_tree(void *item, int priority, binary_tree *next, bin
 	return bt;
 }
 
-binary_tree* enqueue(binary_tree *bt, binary_tree *new_element)
+binary_tree* enqueue(binary_tree *bt, void *item, int priority)
 {
+	binary_tree *new_element = create_binary_tree(item, priority, NULL, NULL, NULL);
 	if(bt == NULL || bt->priority >= new_element->priority)
 	{
 		new_element->next = bt;
