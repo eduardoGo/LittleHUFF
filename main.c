@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "compress.h"
-#include "descompress.h"
+#include "compress.c"
 
 int main(int argc, char const *argv[])
 {
@@ -21,10 +20,10 @@ int main(int argc, char const *argv[])
 				printf("Não foi possível abrir o arquvio\n");
 				return 0;
 			}
-			printf("Digite o nome do arquivo de saída:\n");
-			fgets(name,198,stdin);
-			strcat(name,".huff");
-			new_arq = fopen(name, "w");
+			//printf("Digite o nome do arquivo de saída:\n");
+			//fgets(name,198,stdin);
+			//strcat(name,".huff");
+			//new_arq = fopen(name, "w");
 			fseek(arq,0,SEEK_END);
 			tam = ftell(arq);
 			fseek(arq,0,SEEK_SET);

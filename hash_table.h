@@ -1,6 +1,9 @@
 #ifndef HASH_TABLE_H
 #define HASH_TABLE_H
 
+typedef struct _hash_table hash_table;
+typedef struct NODE node;
+
 //CRIA UMA HASH TABLE
 hash_table* create_hash_table();
 

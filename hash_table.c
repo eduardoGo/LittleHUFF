@@ -1,9 +1,9 @@
-#include <hash_table.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "hash_table.h"
 #define MAX_SIZE 256
-typedef struct _hash_table hash_table;
-typedef struct _node node;
 
-struct _node
+struct NODE
 {
 	void* key;
 	void* value;	
@@ -55,7 +55,7 @@ void put(hash_table *ht, void *key, void *value, int (*hash_function)(void *key)
 void* get(hash_table *ht, void *key, int (*hash_function)(void *key), int (*equals)(void *key1, void *key2))
 {
 	int h = hash_function(key);
-	count = 0;
+	int count = 0;
 	while(ht->table[h] != NULL && count < MAX_SIZE)
 	{
 		if( (*equals)(ht->table[h]->key, key) )
