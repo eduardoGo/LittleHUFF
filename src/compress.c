@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "binary_tree.c"
-#include "compress.h"
-#include "hash_table.c"
+#include "../inc/binary_tree.h"
+#include "../inc/hash_table.h"
+#include "../inc/compress.h"
+
 #define MAX_SIZE 256
 
 int* frequency(FILE *arq, int tam)
@@ -115,6 +116,5 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 	dicionary = tree_to_table(bt);
 	printf("Codding...\n");
 	codding(new_arq,arq,dicionary,tamanho,tree_size(bt));
-
 
 }

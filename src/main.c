@@ -1,14 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "compress.h"
-#include "descompress.h"
+#include "compress.c" //dps tem que mudar isso
 
 int main(int argc, char const *argv[])
 {
 	FILE *arq;
-	FILE *new_arq;
-	char name[] = "TESTANDO";
 	long int tam = 0;
 
 	if(argc == 3)
@@ -16,10 +12,6 @@ int main(int argc, char const *argv[])
 		if(argv[1][0] == 'c')
 		{
 			arq = fopen(argv[2],"rb");
-			// strcpy(name,argv[2]);
-			printf("NAME: %s\n", name);
-			strcat(name,".huff");
-			new_arq = fopen(name, "w");
 			if(arq == NULL)
 			{
 				printf("Não foi possível abrir o arquvio\n");
@@ -29,7 +21,7 @@ int main(int argc, char const *argv[])
 			tam = ftell(arq);
 			fseek(arq,0,SEEK_SET);
 			printf("Arquivo com %li bytes!\n", tam);
-			compress(new_arq,arq,tam);
+			compress(arq,tam);
 		}
 		else if(argv[1][0] == 'd')
 		{

@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "binary_tree.h"
-#include "hash_table.h"
+#include "../inc/binary_tree.h"
+#include "../inc/hash_table.h"
 
 #define MAX_SIZE 256
 #define DEBUG if(1)
