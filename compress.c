@@ -15,15 +15,17 @@ int* frequency(FILE *arq, int tam)
 	{
 		freq[getc(arq)]++;
 	}
+	fseek(arq,0,SEEK_SET);
 	return freq;
 }
 
-/*
+
 
 int hash_fuction(void *key)
 {
 	return *((int*) key);
 }
+
 
 char add_byte(unsigned char byte, int pos)
 {
@@ -50,45 +52,41 @@ void set_tree_size(FILE *new_arq,short int tree_size)
 
 }
 
+
 void set_tree(FILE *new_arq, char *tree)
 {
-  
   while(*tree != '\0')
   {
   	fprintf(new_arq,"%c", *(tree++));
   }
 }
 
+
 void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,int size_arq,binary_tree *bt)
 {
 	int i,j,pos;
 
 	unsigned char byte = 0,trash = 0;
-	unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
 	char *current,*tree;
-	int *tree_size;
+	int *tree_size = (int*) malloc(sizeof(int));
 	
-	// 	talvez n precisse disso
-	//	fprintf(new_arq,"%s", byte);
-	//	fprintf(new_arq,"%s", byte);
-	
-
-	fseek(new_arq,2,SEEK_SET); //Os primeiros 16bits são do head
+	fprintf(new_arq,"%c", byte);
+	fprintf(new_arq,"%c", byte);
 
 	tree = tree_pre_order(bt,tree_size); //Ponteiro para uma string que contem a arvore em pre ordem
 										  // tambem coloca o tamanho da arvore no ponteiro *tree_size
-
+	
 	set_tree(new_arq,tree); //Coloca a arvore em pre ordem no arquivo
 	fseek(new_arq,*tree_size,SEEK_CUR); //Seta o fluxo corrente a partir da arvore
 
+	
 	pos = j = i = 0;
 
 	for(j = 0; j < size_arq; ++j)
 	{
+		unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
 		*aux = getc(arq);
-		current = ((unsigned char*) get(dicionary, aux, hash_fuction, compare));
-
-		i = 0;
+		current = (unsigned char*) get(dicionary, aux, hash_fuction);
 		while(current[i] != '\0')
 		{
 			if(pos == 8)
@@ -103,7 +101,7 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,int size_arq,binary
 			i++;
 		}
 	}
-
+	
 	fseek(new_arq,0,SEEK_SET); //Seta o fluxo corrente no inicio do arquivo
 	set_tree_size(new_arq,*tree_size);
 	
@@ -116,7 +114,7 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,int size_arq,binary
 
 }
 
-*/
+
 
 void compress(FILE *new_arq,FILE *arq, int tamanho)
 {
@@ -144,22 +142,14 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 
 	printf("Creatting tree...\n");
 	bt = queue_to_tree(bt);
-	printf("Printting treee...\n");
-	print_pre_order(bt);
-	printf("\n");
-	
 	printf("Creatting dicionary...\n");
 	dicionary = tree_to_table(bt);
-	printf("Pritting dicionary...\n");
-	print_hash(dicionary);
-	
-	/*
 	printf("Codding...\n");
 	codding(new_arq,arq,dicionary,tamanho,bt);
-
+	
 	printf("Sucess! :)\n");
 	
-	*/
+	
 
 
 }

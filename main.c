@@ -20,14 +20,15 @@ int main(int argc, char const *argv[])
 				printf("Não foi possível abrir o arquvio\n");
 				return 0;
 			}
-			//printf("Digite o nome do arquivo de saída:\n");
-			//fgets(name,198,stdin);
-			//strcat(name,".huff");
-			//new_arq = fopen(name, "w");
+			printf("Digite o nome do arquivo de saída:\n");
+			fgets(name,198,stdin);
+			strcat(name,".huff");
+			new_arq = fopen(name, "w");
 			fseek(arq,0,SEEK_END);
 			tam = ftell(arq);
 			fseek(arq,0,SEEK_SET);
 			printf("Arquivo com %li bytes!\n", tam);
+
 			compress(new_arq,arq,tam);
 		}
 		else if(argv[1][0] == 'd')

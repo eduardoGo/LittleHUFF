@@ -103,65 +103,102 @@ void print_hash(hash_table *ht)
 	int i;
 	for(i = 0; i < 8; ++i)
 	{
-		printf("[%d] Key: '%c' Value: %c\n", i, * (char*) ht->table[i]->key,* (char*) ht->table[i]->value);
+		printf("[%d] Key: '%c' Value: %s\n", i, * (char*) ht->table[i]->key, (char*) ht->table[i]->value);
 	}
 }
 
+void insert_tree(binary_tree *bt, char *tree, int *i)
+{
+	if(bt != NULL)
+	{
+		if(*((char*) bt->item) == '*' && bt->left == NULL && bt->right == NULL) //Caracter de escape
+		{
+			*(tree + *i ) = '\\';
+			*i = *i+1;
+		}
+		*(tree + *i ) = *((char*) bt->item);
+		*i = *i+1;
+		insert_tree(bt->left,tree,i);
+		insert_tree(bt->right,tree,i);
+	}
+}
+
+char* tree_pre_order(binary_tree *bt, int *i)
+{
+	char *tree;
+	tree = (char*) malloc(8200*sizeof(char)); //MAX_SIZE da arvore '8200'
+	*i = 0;
+	insert_tree(bt,tree,i);
+	*(tree + *i ) = '\0';
+	tree = realloc(tree, *(i) * sizeof(char)); //realloc de acordo com o tamanho da arvore (i)
+	printf("Array com elementos da arvore em pre ordem:\n");
+	printf("%s\n", tree);
+	printf("Size: %d\n", *i);
+	return tree;
+}
+
+
 hash_table* tree_to_table(binary_tree *bt)
 {
+	int k;
 	hash_table *ht = create_hash_table();
 	char *i = (char*) malloc(10*sizeof(char));
-	char *value = (char*) malloc(10*sizeof(char));
+	char **value;
+	value = (char**) malloc(10*sizeof(char*));
 	
+	for( k = 0; k < 10; ++k) value[k] = (char*) malloc(10*sizeof(char));
+
+
 	*(i) = '#';
-	*value = '0';
+	value[0] = "00";
 
 	ht->table[0]->key =  i;
-	ht->table[0]->value = value;
+	ht->table[0]->value = value[0];
 
 
-	*(i+1) = '*';
-	*(value+1) = '1';
+	*(i+1) = 'F';
+	value[1] = "01";
 
 	ht->table[1]->key =  i+1;
-	ht->table[1]->value = (value+1);
+	ht->table[1]->value = value[1];
 
 	*(i+2) = '@';
-	*(value+2) = '2';
+	value[2] = "10";
 
 
 	ht->table[2]->key =  i+2;
-	ht->table[2]->value = (value+2);
+	ht->table[2]->value =value[2];
 
 	*(i+3) = '&';
-	*(value+3) = '3';
+	value[3] = "11";
 
 	ht->table[3]->key =  i+3;
-	ht->table[3]->value = (value+3);
+	ht->table[3]->value = value[3];
 	*(i+4) = '(';
-	*(value+4) = '4';
+	value[4] = "001";
 
 	ht->table[4]->key =  i+4;
-	ht->table[4]->value = (value+4);
+	ht->table[4]->value =value[4];
 
 	*(i+5) = ')';
-	*(value+5) = '5';
+	value[5] = "010";
 
 
 	ht->table[5]->key =  i+5;
-	ht->table[5]->value = (value+5);
+	ht->table[5]->value =value[5];
 
 	*(i+6) = '$';
-	*(value+6) = '6';
+	value[6] = "100";
 
 	ht->table[6]->key =  i+6;
-	ht->table[6]->value = (value+6);
+	ht->table[6]->value =value[6];
 
 	*(i+7) = '!';
-	*(value+7) = '7';
+	value[7] = "011";
 
 	ht->table[7]->key =  i+7;
-	ht->table[7]->value = (value+7);
+	ht->table[7]->value =value[7];
+
 	return ht;
 	
 	
@@ -175,4 +212,12 @@ binary_tree* enqueue(binary_tree *bt, void *item, int priority)
 
 	return bt;
 
+}
+
+void* get(hash_table *dicionary,void* key, int (*hash_function)(void *key))
+{
+	int i;
+	int h = hash_function(key) % 8;
+	//printf("Pegar a key: %d\n", h);
+	return dicionary->table[h]->value;
 }
