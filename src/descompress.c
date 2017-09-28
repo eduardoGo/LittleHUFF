@@ -8,60 +8,74 @@
 #define DEBUG if(1)
 
 // CONVERTE CARACTERE PARA BINÁRIO, SALVA EM STRING E ENTÃO RETORNA A STRING
-char * get_bits(char a)
-{
-	char bits[8];
-	int b = (int) a; // CONVERTE O CARACTERE PARA DECIMAL
-
-	int i;
-	for (i = 7; i >= 0; i--)
-	{
-		// 0 OCUPA A POSIÇÃO 48 NA TABELA ASCII E 1 OCUPA A POSIÇÃO SEGUINTE
-		bits[i] = (char) ((b%2) + 48); 
-	}
-
-	return bits;
-}
 
 /*
-	INFORMAÇÕES DO CABEÇALHO
+	INFORMAÇÕES DO CABEÇALHO|
 */
 
 // TAMANHO DO LIXO
-int get_trash(char byte[8])
+int get_trash(FILE *arquivo)
 {
-	int trash = 0;
-	int len = strlen(byte);
-	
-	int i;
-	for (i = 2; i >= 0; i--)
-	{
-		if (byte[i] == '1') trash += pow(2,i);
-	}
-	
-	return trash;
+	unsigned char byte;
+	byte = getc(arquivo);
+	byte = byte >> 5;
+	byte = byte & 255;
+	return byte;
 }
 
 // ÁRVORE DE CODIFICAÇÃO
-int get_size_tree(char byte[16])
+int get_size_tree(FILE *arquivo)
 {
-	int size = 0;
-	int i;
-	for (i = sizeof(byte); i > (16-) ; i--)
+	fseek(arquivo,0,SEEK_SET);
+	unsigned char byte;
+	short int tam = 0;
+	byte = getc(arquivo);
+	byte = byte << 3;
+	byte = byte >> 3;
+	tam = byte;
+	tam = tam << 8;
+	byte = getc(arquivo);
+	tam = byte | tam;
+	return tam;
+}
+
+void write_file(hash_table *dicionary, FILE *file, FILE *new_file)
+{
+	unsigned char byte;
+
+	while(byte = getc(file) != EOF)
 	{
-		if ()
+		
+
 	}
 }
 
-void descompress(FILE * file, FILE * new_file)
+void descompress(FILE *file)
 {
-	unsigned char c[2];
-	char bits[8];
-	int trash;
-	
-	fread(c, sizeof(unsigned char), 2, file);
+	int trash,size_tree;
+	binary_tree *bt = create_empty_binary_tree();
+	hash_table *dicionary;
+	FILE *new_file;
+	char name[200];
 
-	bits = get_bits(c[0]);
-	trash = get_trash(bits);
+	//fread(c, sizeof(unsigned char), 2, file);
+
+	trash = get_trash(file);
+	size_tree = get_size_tree(file);
+	
+	printf("Trash: %d\nsize_tree: %d\n", trash,size_tree);
+
+	printf("Digite o nome do arquivo de saida:\n");
+	scanf("%s", name);
+
+	new_file = fopen(name,"wb");
+
+	bt = rebuild_tree(bt,file);
+	//dicionary = tree_to_table(bt); //acho que vai ter que mudar isso
+	
+	//write_file(dicionary,file,new_file);
+	/*
+		Ate aqui ta funcionando, ja testei e comparei e deu certinho...
+	*/
 
 }

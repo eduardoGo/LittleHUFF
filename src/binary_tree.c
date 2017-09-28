@@ -66,6 +66,17 @@ void print_queue(binary_tree *bt)
 	}
 }
 
+
+void print_pre_order(binary_tree *bt)
+{
+		if(bt != NULL)
+		{
+			printf("%c ", *(char*)bt->item);
+			print_pre_order(bt->left);
+			print_pre_order(bt->right);
+		}
+}
+
 binary_tree* queue_to_tree(binary_tree *bt)
 {
 
@@ -159,4 +170,38 @@ char* traversal_tree(binary_tree *bt, short int *id)
 	tree[*id] = '\0';
 	tree = realloc(tree,(*id + 1)*sizeof(char)); //realloc de acordo com o tamanho da arvore que ficou
 	return tree;
+}
+
+binary_tree* rebuild_tree(binary_tree *bt,FILE *file)
+{
+	unsigned char byte;
+
+	byte = getc(file);
+
+	if(byte == '\\')
+	{
+		byte = getc(file);
+		unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
+		*aux = byte;
+		bt = create_binary_tree(aux,0,NULL,NULL,NULL);
+		return bt;
+			
+	}
+	else if(byte == '*')
+	{
+		unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
+		*aux = byte;
+		bt = create_binary_tree(aux,0,NULL,NULL,NULL);
+		bt->left = rebuild_tree(bt->left,file);
+		bt->right = rebuild_tree(bt->right,file);
+		return bt;
+	}
+	else
+	{
+		unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
+		*aux = byte;
+		bt = create_binary_tree(aux,0,NULL,NULL,NULL);
+		return bt;
+	}
+
 }

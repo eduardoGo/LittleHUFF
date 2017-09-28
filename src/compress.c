@@ -73,6 +73,11 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,int size_arq,binary
 
 	tree = traversal_tree(bt,tree_size); //Ponteiro para uma string que contem a arvore em pre ordem
 
+	printf("Size tree: %d\n", *tree_size);
+
+	print_pre_order(bt);
+	printf("\n");
+	
 	set_tree(new_arq,tree,tree_size); //Coloca a arvore em pre ordem no arquivo
 	pos = j = i = 0;
 
@@ -102,6 +107,8 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,int size_arq,binary
 	fprintf(new_arq, "%c", byte);
 	fseek(new_arq,0,SEEK_SET);
 	
+	printf("Trash: %d\n", 8-pos);
+
 	trash = (8-pos) << 5;
 	set_header(new_arq,tree_size,trash);
 

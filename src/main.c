@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../inc/compress.h"
+#include "../inc/descompress.h"
 
 int main(int argc, char const *argv[])
 {
@@ -34,7 +35,7 @@ int main(int argc, char const *argv[])
 		else if(argv[1][0] == 'd')
 		{
 			arq = fopen(argv[2],"rb");
-			printf("DSucess\n");
+			descompress(arq);
 		}
 		else
 		{

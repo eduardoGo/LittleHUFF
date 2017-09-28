@@ -3,6 +3,7 @@
 
 #include "hash_table.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct _binary_tree binary_tree;
 
@@ -30,5 +31,10 @@ unsigned char get_item(binary_tree *bt);
 
 //RECEBE UM NO ENFILEIRADO E RETORNA O PROXIMO
 binary_tree* get_next(binary_tree *bt);
+
+//RECEBE UM ARQUIVO COM UMA ARVORE BINARIA EM PRE ORDEM E MONTA A ARVORE DE ACORDO COM A ESTRUTURA
+binary_tree* rebuild_tree(binary_tree *bt,FILE *file);
+
+void print_pre_order(binary_tree *bt);
 
 #endif
