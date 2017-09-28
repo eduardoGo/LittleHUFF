@@ -39,23 +39,24 @@ char add_bit(unsigned char byte, int pos)
 	return mask | byte;
 }
 
-void set_header(FILE *new_arq,short int tree_size, unsigned char trash)
+void set_header(FILE *new_arq,short int *tree_size, unsigned char trash)
 {
-	unsigned char byte = tree_size >> 8;
+	unsigned char byte = *tree_size >> 8;
 	trash =  trash | byte;
 	fprintf(new_arq, "%c", trash);
-	byte = tree_size;
+	byte = *tree_size;
 	trash = byte & 255; //reaproveitando a variavel trash
 	fprintf(new_arq, "%c", trash);
 }
 
 
-void set_tree(FILE *new_arq, char *tree)
+void set_tree(FILE *new_arq, char *tree, short int *size)
 {
-  while(*tree != '\0')
-  {
-  	fprintf(new_arq,"%c", *(tree++));
-  }
+	int i = 0;
+	for(i = 0; i < *size; ++i)
+	{
+	 	fprintf(new_arq,"%c", tree[i]);
+	}
 }
 
 
@@ -65,16 +66,14 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,int size_arq,binary
 	unsigned char byte = 0,trash = 0;
 	
 	char *current,*tree;
-	short int tree_size;
+	short int *tree_size = (short int *) malloc(1*sizeof(short int));
 	
 	fprintf(new_arq,"%c", byte);
 	fprintf(new_arq,"%c", byte);
 
-	tree = traversal_tree(bt); //Ponteiro para uma string que contem a arvore em pre ordem
-	tree_size = strlen(tree);
+	tree = traversal_tree(bt,tree_size); //Ponteiro para uma string que contem a arvore em pre ordem
 
-	set_tree(new_arq,tree); //Coloca a arvore em pre ordem no arquivo
-	
+	set_tree(new_arq,tree,tree_size); //Coloca a arvore em pre ordem no arquivo
 	pos = j = i = 0;
 
 	for(j = 0; j < size_arq; ++j)
@@ -100,12 +99,9 @@ void codding(FILE *new_arq, FILE *arq, hash_table *dicionary,int size_arq,binary
 		i = 0;
 	}
 
-	printf("Size tree: %d\n", tree_size);
 	fprintf(new_arq, "%c", byte);
-	printf("Trash: %d\n", 8-pos);
 	fseek(new_arq,0,SEEK_SET);
-
-
+	
 	trash = (8-pos) << 5;
 	set_header(new_arq,tree_size,trash);
 
@@ -122,22 +118,7 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 	int i;
 	binary_tree *bt = create_empty_binary_tree();
 	hash_table *dicionary;
-
-	int max = 100,a = 0;
-	unsigned char b,d;
-	char *teste;
 	
-	for(i = 0; i < MAX_SIZE; ++i)
-	{
-		if(freq[i] < max)
-		{
-			a = max;
-			max = freq[i];
-			d = b;
-			b = i;
-		}
-	}
-
 	for(i = 0; i<MAX_SIZE; ++i)
 	{
 		if( freq[i] )
@@ -153,12 +134,6 @@ void compress(FILE *new_arq,FILE *arq, int tamanho)
 	printf("Creatting dicionary...\n");
 	dicionary = tree_to_table(bt);
 	printf("Codding...\n");
-
-	printf("Byte de menor frequencia: %x\n", b);
-	unsigned char *aux1 = (unsigned char*) malloc(1*sizeof(unsigned char));
-	*aux1 = b;
-	teste = (unsigned char*) get(dicionary, aux1, hash_fuction, compara);
-	printf("Codificalcao do byte de menor frequencia: %s\n", teste);
 	codding(new_arq,arq,dicionary,tamanho,bt);
 	
 	printf("Sucess! :)\n");

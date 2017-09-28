@@ -1,5 +1,7 @@
+
 #include "../inc/binary_tree.h"
 #include <string.h>
+#include <stdio.h>
 
 struct _binary_tree
 {
@@ -54,6 +56,16 @@ binary_tree* enqueue(binary_tree *bt, binary_tree *new_element)
 
 }
 
+void print_queue(binary_tree *bt)
+{
+	binary_tree *node = bt;
+	while(node->next != NULL)
+	{
+		printf("%x --> ", *(char*)node->item);
+		node = node->next;
+	}
+}
+
 binary_tree* queue_to_tree(binary_tree *bt)
 {
 
@@ -91,7 +103,6 @@ void mapping(binary_tree *bt, hash_table *ht, unsigned char *code, int depth)
 
 		unsigned char *item = (unsigned char *) malloc(sizeof(unsigned char));
 		*item = *((unsigned char *) bt->item);
-
 		put(ht, item, value, hash_function);
 	
 	} else {
@@ -126,25 +137,26 @@ unsigned char get_item(binary_tree *bt)
 }
 
 char *tree = NULL;
-int id = 0;
 
-void traversal_pre_order(binary_tree *bt)
+void traversal_pre_order(binary_tree *bt,short int *id)
 {
 	if(bt != NULL){
 
 		if( bt->left == NULL && bt->right == NULL && (get_item(bt) == 42 || get_item(bt) == 92)){ /* caracteres * e \ */
-			tree[id++] = '\\';
+			tree[*id] = '\\';
+			*id += 1;
 		}
-		tree[id++] = get_item(bt);
-		traversal_pre_order(bt->left);
-		traversal_pre_order(bt->right);
+		tree[*id] = get_item(bt);
+		*id += 1;
+		traversal_pre_order(bt->left,id);
+		traversal_pre_order(bt->right,id);
 	}
 }
-
-char* traversal_tree(binary_tree *bt)
+char* traversal_tree(binary_tree *bt, short int *id)
 {
 	tree = (char *) malloc(8300*sizeof(char));
-	traversal_pre_order(bt);
-	tree[id] = '\0';
+	traversal_pre_order(bt,id);
+	tree[*id] = '\0';
+	tree = realloc(tree,(*id + 1)*sizeof(char)); //realloc de acordo com o tamanho da arvore que ficou
 	return tree;
 }

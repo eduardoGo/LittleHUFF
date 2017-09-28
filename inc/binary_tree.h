@@ -24,10 +24,9 @@ binary_tree* queue_to_tree(binary_tree *bt);
 hash_table* tree_to_table(binary_tree *bt);
 
 //RECEBE UMA ARVORE BINARIA E RETORNA UMA STRING COM SUA REPRESENTACAO EM PRE ORDEM 
-char* traversal_tree(binary_tree *bt);
-
+char* traversal_tree(binary_tree *bt,short int *id);
 //RECEBE UM NO DE UMA ARVORE E RETORNA UM INTEIRO DO ITEM QUE ESSE NO CONTEM
-int get_item(binary_tree *bt);
+unsigned char get_item(binary_tree *bt);
 
 //RECEBE UM NO ENFILEIRADO E RETORNA O PROXIMO
 binary_tree* get_next(binary_tree *bt);

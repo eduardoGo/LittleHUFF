@@ -7,7 +7,7 @@ int main(int argc, char const *argv[])
 {
 	FILE *arq;
 	FILE *new_arq;
-	char name[200] = "testes";
+	char name[200];
 	long int tam = 0;
 
 	if(argc == 3)
@@ -20,8 +20,8 @@ int main(int argc, char const *argv[])
 				printf("Não foi possível abrir o arquvio\n");
 				return 0;
 			}
-			//printf("Digite o nome do arquivo de saída:\n");
-			//fgets(name,198,stdin);
+			printf("Digite o nome do arquivo de saída:\n");
+			scanf("%s", name);
 			strcat(name,".huff");
 			new_arq = fopen(name, "wb");
 			fseek(arq,0,SEEK_END);

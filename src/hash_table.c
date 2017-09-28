@@ -1,3 +1,4 @@
+
 #include "../inc/hash_table.h"
 
 #define MAX_SIZE 256
