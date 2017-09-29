@@ -1,5 +1,6 @@
 
 #include "../inc/binary_tree.h"
+//REMOVER INCLUDES ABAIXO POSTERIORMENTE, USADOS EM TESTES
 #include <string.h>
 #include <stdio.h>
 
@@ -56,6 +57,7 @@ binary_tree* enqueue(binary_tree *bt, binary_tree *new_element)
 
 }
 
+//FUNÇÃO DE TESTE REMOVER POSTERIORMENTE
 void print_queue(binary_tree *bt)
 {
 	binary_tree *node = bt;
@@ -66,7 +68,7 @@ void print_queue(binary_tree *bt)
 	}
 }
 
-
+//FUNÇÃO DE TESTE REMOVER POSTERIORMENTE
 void print_pre_order(binary_tree *bt)
 {
 		if(bt != NULL)
@@ -147,9 +149,9 @@ unsigned char get_item(binary_tree *bt)
 	return *( (unsigned char*) bt->item ); 
 }
 
-char *tree = NULL;
+unsigned char *tree = NULL;
 
-void traversal_pre_order(binary_tree *bt,short int *id)
+void traversal_pre_order(binary_tree *bt, short int *id)
 {
 	if(bt != NULL){
 
@@ -158,49 +160,41 @@ void traversal_pre_order(binary_tree *bt,short int *id)
 			*id += 1;
 		}
 		tree[*id] = get_item(bt);
-		*id += 1;
-		traversal_pre_order(bt->left,id);
-		traversal_pre_order(bt->right,id);
+		*id += 1 ;
+		traversal_pre_order(bt->left, id);
+		traversal_pre_order(bt->right, id);
 	}
 }
-char* traversal_tree(binary_tree *bt, short int *id)
+unsigned char* traversal_tree(binary_tree *bt, short int *id)
 {
-	tree = (char *) malloc(8300*sizeof(char));
-	traversal_pre_order(bt,id);
-	tree[*id] = '\0';
-	tree = realloc(tree,(*id + 1)*sizeof(char)); //realloc de acordo com o tamanho da arvore que ficou
+	tree = (unsigned char *) malloc(8300*sizeof(char));
+	*id = 0;
+	traversal_pre_order(bt, id);
 	return tree;
 }
 
-binary_tree* rebuild_tree(binary_tree *bt,FILE *file)
+binary_tree* rebuild_tree(binary_tree *bt, FILE *file)
 {
-	unsigned char byte;
+	unsigned char *aux = (unsigned char*) malloc(sizeof(unsigned char));
+	*aux = getc(file);
 
-	byte = getc(file);
-
-	if(byte == '\\')
+	if(*aux == '\\')
 	{
-		byte = getc(file);
-		unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
-		*aux = byte;
-		bt = create_binary_tree(aux,0,NULL,NULL,NULL);
+		*aux = getc(file);
+		bt = create_binary_tree(aux, 0, NULL, NULL, NULL);
 		return bt;
 			
 	}
-	else if(byte == '*')
-	{
-		unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
-		*aux = byte;
-		bt = create_binary_tree(aux,0,NULL,NULL,NULL);
-		bt->left = rebuild_tree(bt->left,file);
-		bt->right = rebuild_tree(bt->right,file);
+	else if(*aux == '*')
+	{ 
+		bt = create_binary_tree(aux, 0, NULL, NULL, NULL);
+		bt->left = rebuild_tree(bt->left, file);
+		bt->right = rebuild_tree(bt->right, file);
 		return bt;
 	}
 	else
 	{
-		unsigned char *aux = (unsigned char*) malloc(1*sizeof(unsigned char));
-		*aux = byte;
-		bt = create_binary_tree(aux,0,NULL,NULL,NULL);
+		bt = create_binary_tree(aux, 0, NULL, NULL, NULL);
 		return bt;
 	}
 

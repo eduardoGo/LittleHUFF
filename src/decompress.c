@@ -1,10 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "../inc/binary_tree.h"
-#include "../inc/hash_table.h"
+#include "../inc/decompress.h"
 
-#define MAX_SIZE 256
 #define DEBUG if(1)
 
 // CONVERTE CARACTERE PARA BINÁRIO, SALVA EM STRING E ENTÃO RETORNA A STRING
@@ -18,41 +13,42 @@ int get_trash(FILE *arquivo)
 {
 	unsigned char byte;
 	byte = getc(arquivo);
-	byte = byte >> 5;
-	byte = byte & 255;
-	return byte;
+	return byte >> 5;
 }
 
 // ÁRVORE DE CODIFICAÇÃO
-int get_size_tree(FILE *arquivo)
+int get_size_tree(FILE *file)
 {
-	fseek(arquivo,0,SEEK_SET);
-	unsigned char byte;
-	short int tam = 0;
-	byte = getc(arquivo);
+	fseek(file, 0, SEEK_SET);
+
+	unsigned char byte = getc(file);
+	short int size = 0;
+
 	byte = byte << 3;
 	byte = byte >> 3;
-	tam = byte;
-	tam = tam << 8;
-	byte = getc(arquivo);
-	tam = byte | tam;
-	return tam;
+
+	size = byte;
+	size = size << 8;
+	byte = getc(file);
+	size = byte | size;
+
+	return size;
 }
 
 void write_file(hash_table *dicionary, FILE *file, FILE *new_file)
 {
 	unsigned char byte;
 
-	while(byte = getc(file) != EOF)
+	while( ( byte = getc(file) ) != EOF)
 	{
 		
 
 	}
 }
 
-void descompress(FILE *file)
+void decompress(FILE *file)
 {
-	int trash,size_tree;
+	int trash, tree_size;
 	binary_tree *bt = create_empty_binary_tree();
 	hash_table *dicionary;
 	FILE *new_file;
@@ -61,9 +57,9 @@ void descompress(FILE *file)
 	//fread(c, sizeof(unsigned char), 2, file);
 
 	trash = get_trash(file);
-	size_tree = get_size_tree(file);
+	tree_size = get_size_tree(file);
 	
-	printf("Trash: %d\nsize_tree: %d\n", trash,size_tree);
+	printf("Trash: %d\tree_size: %d\n", trash,tree_size);
 
 	printf("Digite o nome do arquivo de saida:\n");
 	scanf("%s", name);

@@ -83,10 +83,21 @@ void enqueue_test()
 //Testa se a transformacao da fila em arvore binaria esta correta
 void queue_to_tree_test()
 {
-	char expected[] = "*****CDG*H~**I**B*A\\*z*J*EF1\0";
-	bt = queue_to_tree(bt);
+	char expected[] = "*****CDG*H~**I**B*A\\*z*J*EF1";
+	short int *tree_size = (short int *) malloc(sizeof(short int));
 
-	CU_ASSERT_EQUAL(strcmp(traversal_tree(bt), expected), 0);
+	bt = queue_to_tree(bt);
+	unsigned char *tree = traversal_tree(bt, tree_size);
+
+	int i;
+	for(i=0; i<*tree_size; i++)
+	{
+		if(tree[i] != expected[i])
+		{
+			CU_FAIL("The tree generated is different than expected");
+		}
+	}
+	CU_PASS("OK");
 
 }
 
@@ -128,6 +139,32 @@ void tree_to_table_test()
 	}
 }
 
+void rebuild_tree_test()
+{
+	free(bt);
+	bt = create_empty_binary_tree();
+	FILE *file = fopen("test_bt.txt", "rw");
+	getc(file);
+	getc(file);
+
+	bt = rebuild_tree(bt, file);
+
+	short int *tree_size = (short int *) malloc(sizeof(short int));
+	unsigned char *tree = traversal_tree(bt, tree_size);
+
+	unsigned char expected[] = "****\\*\\*1a*\\*c\\\\";
+
+	int i;
+	for(i=0; i<*tree_size; i++)
+	{
+		if(tree[i] != expected[i])
+		{
+			CU_FAIL("The tree generated is different than expected");
+		}
+	}
+	CU_PASS("OK");
+}
+
 int main()
 {
 	//Initialize CUnit test registry
@@ -160,6 +197,12 @@ int main()
 	}
 
 	if(NULL == CU_add_test(pSuite, "turn_tree_to_table", tree_to_table_test))
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+
+	if(NULL == CU_add_test(pSuite, "rebuild_tree_test", rebuild_tree_test))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
