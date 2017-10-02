@@ -1,5 +1,6 @@
 #include "../inc/compress.h"
 
+// VERIFICA A FREQUENCIA COM QUE UMA SEQUENCIA DE BITS APARECE NO ARQUIVO
 int* frequency(FILE *file, int size)
 {
 	int i;
@@ -51,7 +52,7 @@ void set_tree(FILE *new_file, unsigned char *tree, short int size)
 	}
 }
 
-
+// FUNÇÃO PARA CODIFICAR O ARQUIVO
 void codding(FILE *new_file, FILE *file, hash_table *dicionary, int file_size, binary_tree *bt)
 {
 	int i, j, pos;
@@ -59,6 +60,7 @@ void codding(FILE *new_file, FILE *file, hash_table *dicionary, int file_size, b
 	
 	unsigned char *current, *tree;
 
+	// SALVA OS DOIS PRIMEIROS BYTES NO ARQUIVO
 	fprintf(new_file,"%c", byte);
 	fprintf(new_file,"%c", byte);
 
@@ -118,8 +120,9 @@ void compress(FILE *new_file, FILE *file, int file_size)
 {
 	int *freq = frequency(file, file_size);
 	int i;
+	// CRIA UMA ÁRVO RE BINÁRIA VAZIA
 	binary_tree *bt = create_empty_binary_tree();
-	hash_table *dicionary;
+	hash_table *dicionary; // INSTÂNCIA UMA HASH
 	
 	for(i = 0; i<MAX_SIZE; ++i)
 	{
@@ -127,15 +130,21 @@ void compress(FILE *new_file, FILE *file, int file_size)
 		{
 			int *code = (int *) malloc(sizeof(int));
 			*code = i;
+			// CRIA UM ÁRVORE COM A FREQUENCIA DA SEQUENCIA DE BITS NO ARQUIVO 
+			// E ENFILEIRA (huffman inicialmente é uma fila de árvores)
 			bt = enqueue(bt,
 				create_binary_tree(code, freq[i], NULL, NULL, NULL));
 		}
 	}
 
+	// TRANSFORMA A FILA EM ÁRVORE
 	bt = queue_to_tree(bt);
 	
+	// GERA UMA HASH COM AS SEQUENCIAS DE BIITS
 	dicionary = tree_to_table(bt);
 	
+	// CODIFICA O ARQUIVO (file) GERANDO UM NOVO ARQUIVO (new_file)
+	// USANDO A HASH (dicionary) O TAMANHO DO ARQUIVO (file_size) E AS ARVORES (bt)
 	codding(new_file, file, dicionary, file_size, bt);
 	
 }

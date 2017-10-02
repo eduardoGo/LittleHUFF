@@ -48,7 +48,14 @@ int main(int argc, char const *argv[])
 		else if(argv[1][1] == 'd')
 		{
 			file = fopen(argv[2],"rb");
-			//decompress(file);
+
+			if(file == NULL)
+			{
+				printf("the file could not be opened\n");
+				return 0;
+			}
+			
+			decompress(file);
 			fclose(new_file);
 			fclose(file);
 		}

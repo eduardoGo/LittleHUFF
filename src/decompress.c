@@ -3,6 +3,21 @@
 #define DEBUG if(1)
 
 // CONVERTE CARACTERE PARA BINÁRIO, SALVA EM STRING E ENTÃO RETORNA A STRING
+unsigned char * get_bits(unsigned char a)
+{
+	unsigned char * bits;
+	int b = (int) a; // CONVERTE O CARACTERE PARA DECIMAL
+
+	int i;
+	for (i = 7; i >= 0; i--)
+	{
+		// 0 OCUPA A POSIÇÃO 48 NA TABELA ASCII E 1 OCUPA A POSIÇÃO SEGUINTE
+		bits[i] = (char) ((b%2) + 48); 
+		b /= 2;
+	}
+
+	return bits;
+}
 
 /*
 	INFORMAÇÕES DO CABEÇALHO|
@@ -35,14 +50,41 @@ int get_size_tree(FILE *file)
 	return size;
 }
 
-void write_file(hash_table *dicionary, FILE *file, FILE *new_file)
+// file = arquivo que está sendo manipulado atualmente
+// new_file = arquivo que será gerado
+void write_file(binary_tree * root, FILE *file, FILE *new_file)
 {
-	unsigned char byte;
+	unsigned char * byte = (char *) malloc(sizeof(8*char));
+	unsigned char c;
 
-	while( ( byte = getc(file) ) != EOF)
+	binary_tree * bt = root;
+	// i = INDICE DO ARRAY COM OS BITS PEGOS
+	// can_get = VARIÁVEL QUE DIZ SE POSSO PEGAR UM NOVO CARACTERE E PERCORRE-LO
+	int i = 0, can_get = 1;
+
+	while ( (c = getc(file)) != EOF )
 	{
+		byte = get_bits(c);
 		
-
+		for (i = 0; i < 8; i++)
+		{
+			if (bt->right != NULL || bt->left != NULL)
+			{
+				if (byte[i] == 48)
+				{
+					bt = bt->left;
+				}
+				else 
+				{
+					bt = bt->right;
+				}
+			}
+			else 
+			{
+				fprintf(new_file, "%c", bt->value);
+				bt = root;
+			}
+		}
 	}
 }
 
@@ -54,12 +96,10 @@ void decompress(FILE *file)
 	FILE *new_file;
 	char name[200];
 
-	//fread(c, sizeof(unsigned char), 2, file);
-
 	trash = get_trash(file);
 	tree_size = get_size_tree(file);
 	
-	printf("Trash: %d\tree_size: %d\n", trash,tree_size);
+	printf("Trash: %d\nTree_size: %d\n", trash, tree_size);
 
 	printf("Digite o nome do arquivo de saida:\n");
 	scanf("%s", name);
@@ -67,11 +107,13 @@ void decompress(FILE *file)
 	new_file = fopen(name,"wb");
 
 	bt = rebuild_tree(bt,file);
+
 	//dicionary = tree_to_table(bt); //acho que vai ter que mudar isso
 	
 	//write_file(dicionary,file,new_file);
 	/*
 		Ate aqui ta funcionando, ja testei e comparei e deu certinho...
 	*/
+	write_file(bt, file, new_file);
 
 }

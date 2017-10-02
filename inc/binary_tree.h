@@ -26,6 +26,7 @@ hash_table* tree_to_table(binary_tree *bt);
 
 //RECEBE UMA ARVORE BINARIA E RETORNA UMA STRING COM SUA REPRESENTACAO EM PRE ORDEM 
 unsigned char* traversal_tree(binary_tree *bt, short int *id);
+
 //RECEBE UM NO DE UMA ARVORE E RETORNA UM INTEIRO DO ITEM QUE ESSE NO CONTEM
 unsigned char get_item(binary_tree *bt);
 
