@@ -197,5 +197,4 @@ binary_tree* rebuild_tree(binary_tree *bt, FILE *file)
 		bt = create_binary_tree(aux, 0, NULL, NULL, NULL);
 		return bt;
 	}
-
 }

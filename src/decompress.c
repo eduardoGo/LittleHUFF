@@ -54,13 +54,14 @@ int get_size_tree(FILE *file)
 // new_file = arquivo que será gerado
 void write_file(binary_tree * root, FILE *file, FILE *new_file)
 {
-	unsigned char * byte = (char *) malloc(sizeof(8*char));
+	print_pre_order(root);
+	unsigned char * byte = (unsigned char *) malloc(8*sizeof(unsigned char));
 	unsigned char c;
 
 	binary_tree * bt = root;
 	// i = INDICE DO ARRAY COM OS BITS PEGOS
 	// can_get = VARIÁVEL QUE DIZ SE POSSO PEGAR UM NOVO CARACTERE E PERCORRE-LO
-	int i = 0, can_get = 1;
+	int i = 0;
 
 	while ( (c = getc(file)) != EOF )
 	{
@@ -68,21 +69,21 @@ void write_file(binary_tree * root, FILE *file, FILE *new_file)
 		
 		for (i = 0; i < 8; i++)
 		{
-			if (bt->right != NULL || bt->left != NULL)
+			if (bt != NULL)
 			{
-				if (byte[i] == 48)
+				if (bt->left != NULL && byte[i] == 48)
 				{
 					bt = bt->left;
 				}
-				else 
+				else if (bt->right != NULL)
 				{
 					bt = bt->right;
 				}
-			}
-			else 
-			{
-				fprintf(new_file, "%c", bt->value);
-				bt = root;
+				else 
+				{
+					fprintf(new_file, "%c", *((char *)bt->value));
+					bt = root;
+				}
 			}
 		}
 	}
@@ -106,7 +107,7 @@ void decompress(FILE *file)
 
 	new_file = fopen(name,"wb");
 
-	bt = rebuild_tree(bt,file);
+	bt = rebuild_tree(bt, file);
 
 	//dicionary = tree_to_table(bt); //acho que vai ter que mudar isso
 	
