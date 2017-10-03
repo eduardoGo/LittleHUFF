@@ -198,3 +198,48 @@ binary_tree* rebuild_tree(binary_tree *bt, FILE *file)
 		return bt;
 	}
 }
+void write_file(binary_tree *root, FILE *file, FILE *new_file, short int trash)
+{
+	unsigned char byte,previous_byte;
+	int i;
+
+	binary_tree * bt = root;
+
+	byte = getc(file);
+	previous_byte = byte;
+
+	while ( fscanf(file, "%c", &byte ) != EOF ) //Tava bugando com o getc
+	{
+		
+		for (i = 7; i >= 0; i--)
+		{
+			if (bt->left == NULL && bt->right == NULL)
+			{
+				fprintf(new_file, "%c", *((unsigned char*)bt->item));
+				bt = root;	
+			}
+
+			if((previous_byte >> i) & 1) bt = bt->right;
+			else bt = bt->left;
+		}
+
+		previous_byte = byte;
+	}
+
+	for(i = 7; i >= trash; --i )
+	{
+
+		if(bt->left == NULL && bt->right == NULL)
+		{
+			fprintf(new_file, "%c", *((unsigned char*) bt->item));
+			bt = root;
+		}
+
+		if(previous_byte >> i & 1)
+			bt = bt->right;
+		else bt = bt->left;
+
+	}
+
+
+}

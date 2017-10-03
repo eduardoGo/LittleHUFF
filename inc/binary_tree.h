@@ -38,4 +38,8 @@ binary_tree* rebuild_tree(binary_tree *bt,FILE *file);
 
 void print_pre_order(binary_tree *bt);
 
+//RECEBE UMA ARVORE BINARIA, UM ARQUIVO VAZIO E O ARQUIVO A SER DESCOMPRIMIDO E ESCREVE A DESCOMPRESSAO
+// NO ARQUIVO VAZIO. 
+void write_file(binary_tree *root, FILE *file, FILE *new_file, short int trash);
+
 #endif

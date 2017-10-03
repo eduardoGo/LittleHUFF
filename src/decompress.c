@@ -1,27 +1,5 @@
 #include "../inc/decompress.h"
 
-#define DEBUG if(1)
-
-// CONVERTE CARACTERE PARA BINÁRIO, SALVA EM STRING E ENTÃO RETORNA A STRING
-unsigned char * get_bits(unsigned char a)
-{
-	unsigned char * bits;
-	int b = (int) a; // CONVERTE O CARACTERE PARA DECIMAL
-
-	int i;
-	for (i = 7; i >= 0; i--)
-	{
-		// 0 OCUPA A POSIÇÃO 48 NA TABELA ASCII E 1 OCUPA A POSIÇÃO SEGUINTE
-		bits[i] = (char) ((b%2) + 48); 
-		b /= 2;
-	}
-
-	return bits;
-}
-
-/*
-	INFORMAÇÕES DO CABEÇALHO|
-*/
 
 // TAMANHO DO LIXO
 int get_trash(FILE *arquivo)
@@ -50,71 +28,18 @@ int get_size_tree(FILE *file)
 	return size;
 }
 
-// file = arquivo que está sendo manipulado atualmente
-// new_file = arquivo que será gerado
-void write_file(binary_tree * root, FILE *file, FILE *new_file)
-{
-	print_pre_order(root);
-	unsigned char * byte = (unsigned char *) malloc(8*sizeof(unsigned char));
-	unsigned char c;
 
-	binary_tree * bt = root;
-	// i = INDICE DO ARRAY COM OS BITS PEGOS
-	// can_get = VARIÁVEL QUE DIZ SE POSSO PEGAR UM NOVO CARACTERE E PERCORRE-LO
-	int i = 0;
-
-	while ( (c = getc(file)) != EOF )
-	{
-		byte = get_bits(c);
-		
-		for (i = 0; i < 8; i++)
-		{
-			if (bt != NULL)
-			{
-				if (bt->left != NULL && byte[i] == 48)
-				{
-					bt = bt->left;
-				}
-				else if (bt->right != NULL)
-				{
-					bt = bt->right;
-				}
-				else 
-				{
-					fprintf(new_file, "%c", *((char *)bt->value));
-					bt = root;
-				}
-			}
-		}
-	}
-}
-
-void decompress(FILE *file)
+void decompress(FILE *file, FILE *new_file)
 {
 	int trash, tree_size;
 	binary_tree *bt = create_empty_binary_tree();
-	hash_table *dicionary;
-	FILE *new_file;
-	char name[200];
 
 	trash = get_trash(file);
 	tree_size = get_size_tree(file);
 	
-	printf("Trash: %d\nTree_size: %d\n", trash, tree_size);
-
-	printf("Digite o nome do arquivo de saida:\n");
-	scanf("%s", name);
-
-	new_file = fopen(name,"wb");
-
+	printf("Rebuilding tree...\n");
 	bt = rebuild_tree(bt, file);
-
-	//dicionary = tree_to_table(bt); //acho que vai ter que mudar isso
-	
-	//write_file(dicionary,file,new_file);
-	/*
-		Ate aqui ta funcionando, ja testei e comparei e deu certinho...
-	*/
-	write_file(bt, file, new_file);
-
+	printf("Wait...\n");
+	write_file(bt, file, new_file,trash);
+	printf("Finish!\n");
 }

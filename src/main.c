@@ -19,9 +19,9 @@ int main(int argc, char const *argv[])
 	char name[200];
 	long int file_size = 0;
 
-	if(argc == 4 && argv[1][0] == '-')
+	if(argc == 4)
 	{
-		if(argv[1][1] == 'c')
+		if(argv[1][0] == 'c')
 		{
 			file = fopen(argv[2],"rb");
 
@@ -30,8 +30,9 @@ int main(int argc, char const *argv[])
 				printf("the file could not be opened\n");
 				return 0;
 			}
-		
-			new_file = fopen(argv[3], "wb");
+			strcpy(name,argv[3]);
+			strcat(name,".huff");
+			new_file = fopen(name, "wb");
 			fseek(file, 0, SEEK_END);
 			file_size = ftell(file);
 			fseek(file, 0, SEEK_SET);
@@ -45,7 +46,7 @@ int main(int argc, char const *argv[])
 			fclose(new_file);
 			fclose(file);
 		}
-		else if(argv[1][1] == 'd')
+		else if(argv[1][0] == 'd')
 		{
 			file = fopen(argv[2],"rb");
 
@@ -54,8 +55,9 @@ int main(int argc, char const *argv[])
 				printf("the file could not be opened\n");
 				return 0;
 			}
-			
-			decompress(file);
+			strcpy(name,argv[3]);
+			new_file = fopen(name,"wb");
+			decompress(file,new_file);
 			fclose(new_file);
 			fclose(file);
 		}
