@@ -21,7 +21,7 @@ int main(int argc, char const *argv[])
 
 	if(argc == 4)
 	{
-		if(argv[1][0] == 'c')
+		if(argv[1][1] == 'c')
 		{
 			file = fopen(argv[2],"rb");
 
@@ -46,7 +46,7 @@ int main(int argc, char const *argv[])
 			fclose(new_file);
 			fclose(file);
 		}
-		else if(argv[1][0] == 'd')
+		else if(argv[1][1] == 'd')
 		{
 			file = fopen(argv[2],"rb");
 

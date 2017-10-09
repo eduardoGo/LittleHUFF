@@ -165,14 +165,14 @@ int enqueue(queue *queue, int item,int p)
 	}
 	else
 	{
-		node *currenty = queue->head;
-		while((currenty->next != NULL) && (currenty->next->priority > p))
+		node *current = queue->head;
+		while((current->next != NULL) && (current->next->priority > p))
 		{
 			cont++;
-			currenty = currenty->next; 
+			current = current->next; 
 		}
-		new_node->next = currenty->next;
-		currenty->next = new_node;
+		new_node->next = current->next;
+		current->next = new_node;
 	}
 
 	return cont;
