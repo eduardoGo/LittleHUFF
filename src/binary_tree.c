@@ -57,28 +57,6 @@ binary_tree* enqueue(binary_tree *bt, binary_tree *new_element)
 
 }
 
-//FUNÇÃO DE TESTE REMOVER POSTERIORMENTE
-void print_queue(binary_tree *bt)
-{
-	binary_tree *node = bt;
-	while(node->next != NULL)
-	{
-		printf("%x --> ", *(char*)node->item);
-		node = node->next;
-	}
-}
-
-//FUNÇÃO DE TESTE REMOVER POSTERIORMENTE
-void print_pre_order(binary_tree *bt)
-{
-		if(bt != NULL)
-		{
-			printf("%c ", *(char*)bt->item);
-			print_pre_order(bt->left);
-			print_pre_order(bt->right);
-		}
-}
-
 binary_tree* queue_to_tree(binary_tree *bt)
 {
 

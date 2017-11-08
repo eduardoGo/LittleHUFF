@@ -152,10 +152,10 @@ int is_empty(queue *a)
 
 int enqueue(queue *queue, int item,int p)
 {
-	int cont = 1;
 	node *new_node = (node*) malloc(sizeof(node));
 	new_node->item = item;
 	new_node->priority = p;
+	int cont = 1;
 	
 	if(is_empty(queue) || p > queue->head->priority)
 	{
@@ -176,7 +176,6 @@ int enqueue(queue *queue, int item,int p)
 	}
 
 	return cont;
-	
 }
 
 node* dequeue(queue * queue)
@@ -188,35 +187,28 @@ node* dequeue(queue * queue)
 
 int main()
 {
-	int i,answer,aux;
+	int i,answer,aux,limite;
 	queue *queue = create_queue();
 	heap *heap = create_heap();
 	FILE *file_with_heap;
 	FILE *file_without_heap;
 	FILE *y;
-	printf("Enfileirando 100 elementos...\n");
-	for(i = 1; i <= 100; ++i)
-	{
-		answer = enqueue(queue,i,i);
-		answer = enqueue_H(heap,i);
-	}
-	printf("Sorteando valores...\n");
 
 	file_with_heap = fopen("file_with_heap", "wb");
 	file_without_heap = fopen("file_without_heap", "wb");
 	y = fopen("y", "wb");
-	
-	for(i = 101; i <= 151; ++i)
+
+
+	printf("Quantidade de valores ?\n");
+	scanf("%d", &limite);
+
+	for(i = 1; i <= limite; ++i)
 	{
-		aux = rand() % 100;
-		fprintf(y, "%d,", i-100);
-		fprintf(file_without_heap, "%d,", enqueue(queue,i,aux));
+		aux = rand() % limite;
+		fprintf(y, "%d,", i);
+		fprintf(file_without_heap, "%d,", enqueue(queue,aux,aux));
 		fprintf(file_with_heap, "%d,", enqueue_H(heap,aux));
 	}
-	printf("Finish...\n");
-
-
-
 	
 	return 0;
 }
