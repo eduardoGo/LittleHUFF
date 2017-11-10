@@ -24,7 +24,6 @@ int get_size_tree(FILE *file)
 	size = size << 8;
 	byte = getc(file);
 	size = byte | size;
-
 	return size;
 }
 

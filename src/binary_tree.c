@@ -219,5 +219,10 @@ void write_file(binary_tree *root, FILE *file, FILE *new_file, short int trash)
 
 	}
 
+	if(bt->left == NULL && bt->right == NULL)
+	{
+		fprintf(new_file, "%c", *((unsigned char*) bt->item));
+	}
+
 
 }
