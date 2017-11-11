@@ -37,10 +37,7 @@ int main(int argc, char const *argv[])
 			file_size = ftell(file);
 			fseek(file, 0, SEEK_SET);
 			
-			//REMOVER POSTERIORMENTE
-			printf("=======================\n");
-			printf("Arquivo com %li bytes!\n", file_size);
-
+			
 			compress(new_file, file, file_size);
 
 			fclose(new_file);

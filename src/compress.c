@@ -109,7 +109,6 @@ void codding(FILE *new_file, FILE *file, hash_table *dicionary, int file_size, b
 
 void compress(FILE *new_file, FILE *file, int file_size)
 {
-	printf("Take frequency...\n");
 	int *freq = frequency(file, file_size);
 	int i;
 	// CRIA UMA ÁRVO RE BINÁRIA VAZIA
@@ -128,10 +127,8 @@ void compress(FILE *new_file, FILE *file, int file_size)
 				create_binary_tree(code, freq[i], NULL, NULL, NULL));
 		}
 	}
-	printf("Building tree...\n");
 	// TRANSFORMA A FILA EM ÁRVORE
 	bt = queue_to_tree(bt);
-	printf("Building dicionary...\n");
 	// GERA UMA HASH COM AS SEQUENCIAS DE BIITS
 	dicionary = tree_to_table(bt);
 	
