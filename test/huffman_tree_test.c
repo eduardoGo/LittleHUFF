@@ -1,6 +1,7 @@
 #include "CUnit/Basic.h"
 #include "../inc/huffman_tree.h"
 #include "../inc/hash_table.h"
+#include "../inc/decompress.h"
 #include <stdlib.h>
 
 huffman_tree *tree = NULL;
@@ -193,6 +194,56 @@ void rebuild_tree_test()
 	CU_PASS("OK");
 }
 
+void write_file_test()
+{
+	int file_size,i;
+	unsigned char byte_expected,byte;
+	FILE *expected = fopen("test_file.txt", "r");
+	FILE *descompress = fopen("descompress.txt", "w+r");
+	FILE *compressed = fopen("test_file.huff", "r");
+	
+	/*if(compressed == NULL);
+	{ 
+		CU_FAIL("the file compressed could not be opened");
+	}
+	if(descompress == NULL);
+	{ 
+		CU_FAIL("the new file  could not be creatted");
+	}
+	if(expected == NULL);
+	{ 
+		CU_FAIL("the file expected could not be opened");
+	}
+	*/
+
+
+	int trash = get_trash(compressed);
+	int tree_size = get_size_tree(compressed);
+	huffman_tree *tree = rebuild_tree(tree, compressed);
+	
+
+	write_file(tree, compressed, descompress,trash);
+
+	fseek(descompress, 0, SEEK_END);
+	file_size = ftell(descompress);
+	fseek(descompress, 0, SEEK_SET);
+
+	for(i = 0; i < file_size; ++i)
+	{
+		//byte = getc(descompress);
+		//byte_expected = getc(expected);
+		if(getc(descompress) != getc(expected))
+		{
+			CU_FAIL("The file descompressed is different than expected");
+		}
+	}
+	CU_PASS("OK");
+			
+
+
+}
+
+
 int main()
 {
 	//Initialize CUnit test registry
@@ -237,6 +288,11 @@ int main()
 	}
 
 	if(NULL == CU_add_test(pSuite, "rebuild_tree_test", rebuild_tree_test))
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+	if(NULL == CU_add_test(pSuite, "write_file_test", write_file_test ))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();

@@ -1,6 +1,6 @@
-OBJS = ../src/huffman_tree.c ../src/hash_table.c huffman_tree_test.c
+OBJS = ../src/huffman_tree.c ../src/hash_table.c huffman_tree_test.c ../src/decompress.c
 
-DEPS = ../inc/huffman_tree.h ../inc/hash_table.h
+DEPS = ../inc/huffman_tree.h ../inc/hash_table.h ../inc/decompress.h
 
 OBJS2 = ../src/huffman_tree.c ../src/hash_table.c hash_table_test.c
 compile:
