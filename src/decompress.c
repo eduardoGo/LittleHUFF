@@ -35,7 +35,7 @@ void decompress(FILE *file, FILE *new_file)
 
 	trash = get_trash(file);
 	tree_size = get_size_tree(file);
-	
+
 	tree = rebuild_tree(tree, file);
 	printf("Wait...\n");
 	write_file(tree, file, new_file,trash);

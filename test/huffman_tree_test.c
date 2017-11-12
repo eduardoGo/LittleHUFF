@@ -194,55 +194,43 @@ void rebuild_tree_test()
 	CU_PASS("OK");
 }
 
+
 void write_file_test()
 {
-	int file_size,i;
-	unsigned char byte_expected,byte;
-	FILE *expected = fopen("test_file.txt", "r");
-	FILE *descompress = fopen("descompress.txt", "w+r");
-	FILE *compressed = fopen("test_file.huff", "r");
-	
-	/*if(compressed == NULL);
-	{ 
-		CU_FAIL("the file compressed could not be opened");
-	}
-	if(descompress == NULL);
-	{ 
-		CU_FAIL("the new file  could not be creatted");
-	}
-	if(expected == NULL);
-	{ 
-		CU_FAIL("the file expected could not be opened");
-	}
-	*/
+	int file_size, i;
+	unsigned char byte_expected, byte;
+	FILE *expected = fopen("test_file.txt", "rb");
+	FILE *decompress = fopen("decompress.txt", "wb+rb");
+	FILE *compressed = fopen("test_file.huff", "rb");
 
+	if(expected != NULL && decompress != NULL && compressed != NULL){
 
-	int trash = get_trash(compressed);
-	int tree_size = get_size_tree(compressed);
-	huffman_tree *tree = rebuild_tree(tree, compressed);
-	
+		//Desloca em 2 bytes o cursor para ignorar o lixo e tamanho da árvore
+		fseek(compressed, 2, SEEK_SET);	
 
-	write_file(tree, compressed, descompress,trash);
+		int trash = 7; //Lixo esperado
+		huffman_tree *tree = create_empty_huffman_tree();
+		tree = rebuild_tree(tree, compressed);
 
-	fseek(descompress, 0, SEEK_END);
-	file_size = ftell(descompress);
-	fseek(descompress, 0, SEEK_SET);
+		write_file(tree, compressed, decompress, trash);
 
-	for(i = 0; i < file_size; ++i)
-	{
-		//byte = getc(descompress);
-		//byte_expected = getc(expected);
-		if(getc(descompress) != getc(expected))
+		fseek(decompress, 0, SEEK_END);
+		//Retorna o tamanho do arquivo em bytes
+		file_size = ftell(decompress);
+		fseek(decompress, 0, SEEK_SET);
+
+		for(i=0; i<file_size; i++)
 		{
-			CU_FAIL("The file descompressed is different than expected");
+			if(getc(decompress) != getc(expected)){
+				CU_FAIL("The file decompressed is different than expected");
+			}
 		}
+		CU_PASS("OK");
+
+	} else {
+		CU_FAIL("files are NULL");
 	}
-	CU_PASS("OK");
-			
-
-
 }
-
 
 int main()
 {

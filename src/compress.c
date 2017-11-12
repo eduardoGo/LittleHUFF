@@ -35,6 +35,7 @@ char add_bit(unsigned char byte, int pos)
 
 void set_header(FILE *new_file, short int tree_size, unsigned char trash)
 {
+
 	unsigned char byte = tree_size >> 8;
 	trash = trash | byte;
 	fprintf(new_file, "%c", trash);
@@ -95,6 +96,8 @@ void codding(FILE *new_file, FILE *file, hash_table *dicionary, int file_size, h
 			i++;
 		}
 	}
+
+	printf("%d\n", 8-pos);
 
 	fprintf(new_file, "%c", byte);
 	fseek(new_file, 0, SEEK_SET);
