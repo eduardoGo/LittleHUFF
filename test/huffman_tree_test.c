@@ -1,49 +1,63 @@
 #include "CUnit/Basic.h"
-#include "../inc/binary_tree.h"
+#include "../inc/huffman_tree.h"
 #include "../inc/hash_table.h"
 #include <stdlib.h>
 
-binary_tree *bt = NULL;
+huffman_tree *tree = NULL;
 
 //Adiciona nos a uma arvore 
-int init_bt(){
+int init_tree(){
 
 	int i;
-	bt = create_empty_binary_tree();
+	tree = create_empty_huffman_tree();
 	unsigned char *item;
-	binary_tree *new_node;
+	huffman_tree *new_node;
 
 	for(i=1; i<=10; i++)
 	{
 		item = (unsigned char *) malloc(sizeof(unsigned char));
 		*item = 64+i;
-		new_node = create_binary_tree(item, i, NULL, NULL, NULL);
-		bt = enqueue(bt, new_node);
+		new_node = create_huffman_tree(item, i, NULL, NULL, NULL);
+		if(new_node != NULL) tree = enqueue(tree, new_node);
 
 	}
 
 	item = (unsigned char *) malloc(sizeof(unsigned char));
 	*item = 'z';
-	new_node = create_binary_tree(item, 5, NULL, NULL, NULL);
-	bt = enqueue(bt, new_node);
+	new_node = create_huffman_tree(item, 5, NULL, NULL, NULL);
+	if(new_node != NULL) tree = enqueue(tree, new_node);
 
 	item = (unsigned char *) malloc(sizeof(unsigned char));
 	*item = '1';
-	new_node = create_binary_tree(item, 10000, NULL, NULL, NULL);
-	bt = enqueue(bt, new_node);
+	new_node = create_huffman_tree(item, 10000, NULL, NULL, NULL);
+	if(new_node != NULL) tree = enqueue(tree, new_node);
 
 	item = (unsigned char *) malloc(sizeof(unsigned char));
 	*item = '~';
-	new_node = create_binary_tree(item, 9, NULL, NULL, NULL);
-	bt = enqueue(bt, new_node);
+	new_node = create_huffman_tree(item, 9, NULL, NULL, NULL);
+	if(new_node != NULL) tree = enqueue(tree, new_node);
 
 	item = (unsigned char *) malloc(sizeof(unsigned char));
 	*item = '*';
-	new_node = create_binary_tree(item, 2, NULL, NULL, NULL);
-	bt = enqueue(bt, new_node);
+	new_node = create_huffman_tree(item, 2, NULL, NULL, NULL);
+	if(new_node != NULL) tree = enqueue(tree, new_node);
 
 	return 0;
 
+}
+
+void create_huffman_tree_test()
+{
+		unsigned char *item = (unsigned char *) malloc(sizeof(unsigned char));
+		*item = 64;
+		huffman_tree *new_node = create_huffman_tree(item, 5, NULL, NULL, NULL);
+		
+		if(new_node == NULL)
+		{
+			CU_FAIL("The tree is NULL");
+		} else {
+			CU_PASS("OK");		
+		}
 }
 
 //Testa se o enfileiramento foi feito corretamente
@@ -51,7 +65,7 @@ void enqueue_test()
 {
 	int i;
 	int count = 65;
-	binary_tree *current = bt;
+	huffman_tree *current = tree;
 
 	for(i=1; i<=14; i++){
 
@@ -86,15 +100,21 @@ void queue_to_tree_test()
 	char expected[] = "*****CDG*H~**I**B*A\\*z*J*EF1";
 	short int *tree_size = (short int *) malloc(sizeof(short int));
 
-	bt = queue_to_tree(bt);
-	unsigned char *tree = traversal_tree(bt, tree_size);
+	tree = queue_to_tree(tree);
+	unsigned char *string_tree = traversal_tree(tree, tree_size);
 
-	int i;
-	for(i=0; i<*tree_size; i++)
-	{
-		if(tree[i] != expected[i])
+	if(string_tree == NULL){
+		CU_FAIL("Tree, in pre order, is NULL");
+
+	} else {
+
+		int i;
+		for(i=0; i<*tree_size; i++)
 		{
-			CU_FAIL("The tree generated is different than expected");
+			if(string_tree[i] != expected[i])
+			{
+				CU_FAIL("The tree generated is different than expected");
+			}
 		}
 	}
 	CU_PASS("OK");
@@ -124,40 +144,48 @@ void tree_to_table_test()
 		"0110\0", "01110\0", "01111\0", "1\0"
 	};
 
-	hash_table *ht = tree_to_table(bt);
+	hash_table *ht = tree_to_table(tree);
 	unsigned char *current;
 
-	for(i=0; i<14; i++)
+	if(ht == NULL)
 	{
-		current = (unsigned char*) get(ht, &keys[i], hash_func, equals);
-		
-		if(current != NULL){
-			CU_ASSERT_EQUAL(strcmp(current, codes[i]), 0);
-		} else {
-			CU_FAIL("There are elements that were not entered in the hash table")
+		CU_FAIL("Hash table is NULL");
+
+	} else {
+
+	for(i=0; i<14; i++)
+		{
+			current = (unsigned char*) get(ht, &keys[i], hash_func, equals);
+			
+			if(current != NULL){
+				CU_ASSERT_EQUAL(strcmp(current, codes[i]), 0);
+			} else {
+				CU_FAIL("There are elements that were not entered in the hash table")
+			}
 		}
 	}
+
+	CU_PASS("OK");
 }
 
 void rebuild_tree_test()
 {
-	free(bt);
-	bt = create_empty_binary_tree();
-	FILE *file = fopen("test_bt.txt", "rw");
+	tree = create_empty_huffman_tree();
+	FILE *file = fopen("file_test_tree.txt", "rw");
 	getc(file);
 	getc(file);
 
-	bt = rebuild_tree(bt, file);
+	tree = rebuild_tree(tree, file);
 
 	short int *tree_size = (short int *) malloc(sizeof(short int));
-	unsigned char *tree = traversal_tree(bt, tree_size);
+	unsigned char *string_tree = traversal_tree(tree, tree_size);
 
-	unsigned char expected[] = "****\\*\\*1a*\\*c\\\\";
+	unsigned char expected[] = "****\\*\\*1a*\\*c";
 
 	int i;
 	for(i=0; i<*tree_size; i++)
 	{
-		if(tree[i] != expected[i])
+		if(string_tree[i] != expected[i])
 		{
 			CU_FAIL("The tree generated is different than expected");
 		}
@@ -174,17 +202,23 @@ int main()
 	CU_pSuite pSuite = NULL;
 
 	//Add a suite to the registry
-	pSuite = CU_add_suite("binary_tree_test", init_bt, NULL);
+	pSuite = CU_add_suite("huffman_tree_test", init_tree, NULL);
 
 	//Always check if add was successful
 	if(pSuite == NULL)
 	{
 		CU_cleanup_registry();
 		return CU_get_error();
-	} 
+	}
+
+	if(NULL == CU_add_test(pSuite, "create_huffman_tree_test", create_huffman_tree_test))
+	{
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
 
 	//Add the test to the suite
-	if(NULL == CU_add_test(pSuite, "create_and_add_in_binary_tree", enqueue_test))
+	if(NULL == CU_add_test(pSuite, "add_in_huffman_tree", enqueue_test))
 	{
 		CU_cleanup_registry();
 		return CU_get_error();

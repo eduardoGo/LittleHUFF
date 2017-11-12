@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../inc/binary_tree.h"
+#include "../inc/huffman_tree.h"
 #include "../inc/hash_table.h"
 
 /*RECEBE PONTEIRO PARA O ARQUIVO COMPACTADO E OUTRO PONTEIRO PARA O ARQUIVO ONDE

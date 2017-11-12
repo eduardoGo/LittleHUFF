@@ -43,31 +43,31 @@ void set_header(FILE *new_file, short int tree_size, unsigned char trash)
 }
 
 
-void set_tree(FILE *new_file, unsigned char *tree, short int size)
+void set_tree(FILE *new_file, unsigned char *string_tree, short int size)
 {
 	int i;
 	for(i = 0; i < size; ++i)
 	{
-	 	fprintf(new_file,"%c", tree[i]);
+	 	fprintf(new_file,"%c", string_tree[i]);
 	}
 }
 
 // FUNÇÃO PARA CODIFICAR O ARQUIVO
-void codding(FILE *new_file, FILE *file, hash_table *dicionary, int file_size, binary_tree *bt)
+void codding(FILE *new_file, FILE *file, hash_table *dicionary, int file_size, huffman_tree *tree)
 {
 	int i, j, pos;
 	unsigned char byte = 0, trash = 0;
 	
-	unsigned char *current, *tree;
+	unsigned char *current, *string_tree;
 
 	// SALVA OS DOIS PRIMEIROS BYTES NO ARQUIVO
 	fprintf(new_file,"%c", byte);
 	fprintf(new_file,"%c", byte);
 
 	short int *tree_size = (short int *) malloc(sizeof(short int));
-	tree = traversal_tree(bt, tree_size); //Ponteiro para uma string que contem a arvore em pre ordem
+	string_tree = traversal_tree(tree, tree_size); //Ponteiro para uma string que contem a arvore em pre ordem
 
-	set_tree(new_file, tree, *tree_size); //Coloca a arvore em pre ordem no arquivo
+	set_tree(new_file, string_tree, *tree_size); //Coloca a arvore em pre ordem no arquivo
 	pos = 0;
 
 	for(j = 0; j < file_size; ++j)
@@ -112,7 +112,7 @@ void compress(FILE *new_file, FILE *file, int file_size)
 	int *freq = frequency(file, file_size);
 	int i;
 	// CRIA UMA ÁRVO RE BINÁRIA VAZIA
-	binary_tree *bt = create_empty_binary_tree();
+	huffman_tree *tree = create_empty_huffman_tree();
 	hash_table *dicionary; // INSTÂNCIA UMA HASH
 	
 	for(i = 0; i<MAX_SIZE; ++i)
@@ -123,19 +123,19 @@ void compress(FILE *new_file, FILE *file, int file_size)
 			*code = i;
 			// CRIA UM ÁRVORE COM A FREQUENCIA DA SEQUENCIA DE BITS NO ARQUIVO 
 			// E ENFILEIRA (huffman inicialmente é uma fila de árvores)
-			bt = enqueue(bt,
-				create_binary_tree(code, freq[i], NULL, NULL, NULL));
+			tree = enqueue(tree,
+				create_huffman_tree(code, freq[i], NULL, NULL, NULL));
 		}
 	}
 	// TRANSFORMA A FILA EM ÁRVORE
-	bt = queue_to_tree(bt);
+	tree = queue_to_tree(tree);
 	// GERA UMA HASH COM AS SEQUENCIAS DE BIITS
-	dicionary = tree_to_table(bt);
+	dicionary = tree_to_table(tree);
 	
 	printf("Wait...\n");
 	// CODIFICA O ARQUIVO (file) GERANDO UM NOVO ARQUIVO (new_file)
-	// USANDO A HASH (dicionary) O TAMANHO DO ARQUIVO (file_size) E AS ARVORES (bt)
-	codding(new_file, file, dicionary, file_size, bt);
+	// USANDO A HASH (dicionary) O TAMANHO DO ARQUIVO (file_size) E AS ARVORES (tree)
+	codding(new_file, file, dicionary, file_size, tree);
 	printf("Finish...\n");
 	
 }

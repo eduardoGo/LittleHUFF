@@ -31,13 +31,13 @@ int get_size_tree(FILE *file)
 void decompress(FILE *file, FILE *new_file)
 {
 	int trash, tree_size;
-	binary_tree *bt = create_empty_binary_tree();
+	huffman_tree *tree = create_empty_huffman_tree();
 
 	trash = get_trash(file);
 	tree_size = get_size_tree(file);
 	
-	bt = rebuild_tree(bt, file);
+	tree = rebuild_tree(tree, file);
 	printf("Wait...\n");
-	write_file(bt, file, new_file,trash);
+	write_file(tree, file, new_file,trash);
 	printf("Finish!\n");
 }
