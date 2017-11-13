@@ -1,51 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "compress.c"
+#include "../inc/compress.h"
+#include "../inc/decompress.h"
+
+void print_help()
+{
+	printf("Usage : ./huffman [options] [source_filename_path] [destination_filename_path]\n\n");
+	printf("Options:\n");
+	printf("-c : Compress the source file to destination file\n");
+	printf("-d : Decompress the source file to destination file\n");
+}
 
 int main(int argc, char const *argv[])
 {
-	FILE *arq;
-	FILE *new_arq;
+	FILE *file;
+	FILE *new_file;
 	char name[200];
-	long int tam = 0;
+	long int file_size = 0;
 
-	if(argc == 3)
+	if(argc == 4)
 	{
-		if(argv[1][0] == 'c')
+		if(argv[1][1] == 'c')
 		{
-			arq = fopen(argv[2],"rb");
-			if(arq == NULL)
+			file = fopen(argv[2],"rb");
+
+			if(file == NULL)
 			{
-				printf("Não foi possível abrir o arquvio\n");
+				printf("the file could not be opened\n");
 				return 0;
 			}
-			printf("Digite o nome do arquivo de saída:\n");
-			fgets(name,198,stdin);
+			strcpy(name,argv[3]);
 			strcat(name,".huff");
-			new_arq = fopen(name, "w");
-			fseek(arq,0,SEEK_END);
-			tam = ftell(arq);
-			fseek(arq,0,SEEK_SET);
-			printf("Arquivo com %li bytes!\n", tam);
+			new_file = fopen(name, "wb");
+			fseek(file, 0, SEEK_END);
+			file_size = ftell(file);
+			fseek(file, 0, SEEK_SET);
+			
+			
+			compress(new_file, file, file_size);
 
-			compress(new_arq,arq,tam);
+			fclose(new_file);
+			fclose(file);
 		}
-		else if(argv[1][0] == 'd')
+		else if(argv[1][1] == 'd')
 		{
-			arq = fopen(argv[2],"rb");
-			printf("DSucess\n");
+			file = fopen(argv[2],"rb");
+
+			if(file == NULL)
+			{
+				printf("the file could not be opened\n");
+				return 0;
+			}
+			strcpy(name,argv[3]);
+			new_file = fopen(name,"wb");
+			decompress(file,new_file);
+			fclose(new_file);
+			fclose(file);
 		}
 		else
 		{
-			printf("Argumentos inválidos, ultilize o formato (< c > or < d >) < file >");
-			return 0;
+			print_help();
 		}
 	}
 	else
 	{
-		printf("Argumentos inválidos, ultilize o formato (< c > or < d >) < file >");
-		return 0;
+		print_help();
 	}
+
 	return 0;
 }
